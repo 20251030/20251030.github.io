@@ -3,26 +3,30 @@
 <head>
     <meta charset="utf-8">
     <title>我的照片</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cn-fontsource-yozai-medium/font.css">
-<style>
-    body { font-family: "Yozai Medium", sans-serif; }
-</styl
+    <style>
+        body { text-align: center; font-family: sans-serif; padding: 20px; }
+        button { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; }
+        #photo { max-width: 100%; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <script>
-        // 把 314159 改成你想设的密码
-        var correctPassword = "314159";
 
-        var userInput = prompt("请输入密码查看：");
+<h1>我的照片</h1>
 
-        if (userInput === correctPassword) {
-            document.write(`
-                <h1>欢迎</h1>
-                <p><img src="IMG_8110.jpeg" width="100%"></p>
-            `);
-        } else {
-            document.write("<p>密码错误，刷新页面重试。</p>");
-        }
-    </script>
+<button onclick="showPhoto('115258_livephoto.jpeg')">照片 1</button>
+<button onclick="showPhoto('134820.jpeg')">照片 2</button>
+<button onclick="showPhoto('68.jpeg')">照片 3</button>
+<button onclick="showPhoto('IMG_0133.png')">照片 4</button>
+<button onclick="showPhoto('IMG_8110.jpeg')">照片 5</button>
+
+<br>
+<img id="photo" src="115258_livephoto.jpeg" width="100%">
+
+<script>
+function showPhoto(name) {
+    document.getElementById('photo').src = name;
+}
+</script>
+
 </body>
 </html>
