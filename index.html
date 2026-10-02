@@ -4,38 +4,133 @@
     <meta charset="utf-8">
     <title>我的照片</title>
     <style>
-        body { text-align: center; font-family: sans-serif; padding: 20px; }
-        button { padding: 10px 20px; margin: 5px; font-size: 16px; cursor: pointer; }
-        #photo { max-width: 100%; margin-top: 20px; }
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+            background: linear-gradient(to bottom, #a8edea, #fed6e3, #96e6a1);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+
+        /* 封面页 */
+        #cover {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        #cover h1 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #cover button {
+            padding: 15px 40px;
+            font-size: 18px;
+            background: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        /* 内容区 */
+        #content {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* 毛玻璃文字框 */
+        .text-box {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            text-align: center;
+            color: #333;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 滚动淡入 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .fade-in.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body>
 
-<script>
-    // 👇 把 314159 改成你想设的密码
-    var correctPassword = "314159";
-    var userInput = prompt("请输入密码查看：");
+<!-- 封面页 -->
+<div id="cover">
+    <h1>欢迎来到我的相册</h1>
+    <button onclick="enterSite()">点击进入</button>
+</div>
 
-    if (userInput === correctPassword) {
-        document.write(`
-            <h1>我的照片</h1>
-            <button onclick="showPhoto('115258_livephoto.jpeg')">照片 1</button>
-            <button onclick="showPhoto('134820.jpeg')">照片 2</button>
-            <button onclick="showPhoto('364.jpeg')">照片 3</button>
-            <button onclick="showPhoto('365.jpeg')">照片 4</button>
-            <button onclick="showPhoto('68.jpeg')">照片 5</button>
-            <br>
-            <img id="photo" src="115258_livephoto.jpeg" width="100%">
-            <script>
-                function showPhoto(name) {
-                    document.getElementById('photo').src = name;
+<!-- 内容区 -->
+<div id="content">
+    <script>
+        // 两个密码，两套内容
+        var passwordA = "111111";
+        var passwordB = "222222";
+
+        var userInput = prompt("请输入密码查看：");
+
+        if (userInput === passwordA) {
+            document.write(`
+                <div class="text-box fade-in">
+                    <h1>第一套内容</h1>
+                    <p>这是密码 A 才能看到的内容。</p>
+                </div>
+                <div class="text-box fade-in">
+                    <p>这里可以放第一套的照片。</p>
+                </div>
+            `);
+        } else if (userInput === passwordB) {
+            document.write(`
+                <div class="text-box fade-in">
+                    <h1>第二套内容</h1>
+                    <p>这是密码 B 才能看到的内容。</p>
+                </div>
+                <div class="text-box fade-in">
+                    <p>这里可以放第二套的照片。</p>
+                </div>
+            `);
+        } else {
+            document.write("<p>密码错误，刷新页面重试。</p>");
+        }
+
+        function enterSite() {
+            document.getElementById('cover').style.display = 'none';
+            document.getElementById('content').style.display = 'block';
+            checkFade();
+        }
+
+        function checkFade() {
+            var elements = document.querySelectorAll('.fade-in');
+            for (var i = 0; i < elements.length; i++) {
+                var rect = elements[i].getBoundingClientRect();
+                if (rect.top < window.innerHeight - 50) {
+                    elements[i].classList.add('show');
                 }
-            <\/script>
-        `);
-    } else {
-        document.write("<p>密码错误，刷新页面重试。</p>");
-    }
-</script>
+            }
+        }
+        window.addEventListener('scroll', checkFade);
+        window.addEventListener('load', checkFade);
+    </script>
+</div>
 
 </body>
 </html>
