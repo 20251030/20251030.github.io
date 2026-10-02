@@ -2,12 +2,13 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>小草国</title>
+    <title>我的照片</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cn-fontsource-yozai-medium/font.css">
     <style>
         body {
             margin: 0;
             padding: 0;
-            font-family: sans-serif;
+            font-family: "Yozai Medium", sans-serif;
             background: linear-gradient(to bottom, #a8edea, #fed6e3, #96e6a1);
             background-attachment: fixed;
             min-height: 100vh;
@@ -33,6 +34,12 @@
             color: #333;
             margin-bottom: 20px;
         }
+        #cover img {
+            width: 100px;
+            display: block;
+            margin: 15px auto;
+            border-radius: 10px;
+        }
         #cover button {
             padding: 15px 40px;
             font-size: 18px;
@@ -41,6 +48,7 @@
             border-radius: 30px;
             cursor: pointer;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-family: "Yozai Medium", sans-serif;
         }
 
         /* 内容区 */
@@ -102,23 +110,24 @@
 
 <!-- 封面页 -->
 <div id="cover">
-    <h1>欢迎光临小草国官方网站</h1>
-    <button onclick="enterSite()">由此进入</button>
+    <h1>欢迎来到我的相册</h1>
+    <img src="封面照片.jpg" alt="封面">
+    <button onclick="enterSite()">点击进入</button>
 </div>
 
 <!-- 内容区 -->
 <div id="content">
     <script>
         // 两个密码，两套内容
-        var passwordA = "20251030";
-        var passwordB = "314159";
+        var passwordA = "111111";
+        var passwordB = "222222";
 
-        var userInput = prompt("请输入通关密钥：");
+        var userInput = prompt("请输入密码查看：");
 
         if (userInput === passwordA) {
             document.write(`
                 <div class="text-box fade-in">
-                    <h1>小草国建国一周年庆典</h1>
+                    <h1>第一套内容</h1>
                     <p>这是密码 A 才能看到的内容。</p>
                 </div>
                 <div class="text-box fade-in">
@@ -129,7 +138,7 @@
             document.body.classList.add('theme-b');
             document.write(`
                 <div class="text-box fade-in">
-                    <h1>Europa和Iris的日常片段</h1>
+                    <h1>第二套内容</h1>
                     <p>这是密码 B 才能看到的内容。</p>
                 </div>
                 <div class="text-box fade-in">
