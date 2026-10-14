@@ -91,7 +91,6 @@
 <body>
 
 <canvas id="fireworks"></canvas>
-<audio id="firework-sound" src="烟花音效.mp3"></audio>
 
 <div id="cover">
     <h1>欢迎来到小草国</h1>
@@ -109,13 +108,13 @@
             document.write(`
                 <div class="text-box fade-in">
                     <h1>小草国建国一周年庆典</h1>
-                    <p.s>也是Alley的一岁生日</p>
-                </divplice>
-                <div class="text-box fade(i-in">
-                    <p>这里可以放第一套,的照片。</p>
+                    <p>也是Alley的一岁生日</p>
                 </div>
-             `);
-        } else if (userInput === password1B) {
+                <div class="text-box fade-in">
+                    <p>这里可以放第一套的照片。</p>
+                </div>
+            `);
+        } else if (userInput === passwordB) {
             document.body.classList.add('theme-b');
             document.write(`
                 <div class="text-box fade-in">
@@ -131,13 +130,8 @@
         }
 
         function enterSite() {
-            // 隐藏封面
             document.getElementById('cover').style.display = 'none';
 
-            // 播放音效
-            document.getElementById('firework-sound').play();
-
-            // 在屏幕底部不同位置，错开时间放烟花
             setTimeout(function() {
                 launchFirework(window.innerWidth * 0.2, window.innerHeight * 0.3);
             }, 0);
@@ -148,7 +142,6 @@
                 launchFirework(window.innerWidth * 0.8, window.innerHeight * 0.35);
             }, 600);
 
-            // 等烟花全部炸完（约 1.8 秒），再显示内容
             setTimeout(function() {
                 document.getElementById('content').style.display = 'block';
                 checkFade();
@@ -167,7 +160,6 @@
         window.addEventListener('scroll', checkFade);
         window.addEventListener('load', checkFade);
 
-        // ===== 烟花效果 =====
         var canvas = document.getElementById('fireworks');
         var ctx = canvas.getContext('2d');
         var particles = [];
@@ -180,7 +172,6 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
-        // 升空：从底部飞到目标位置
         function launchFirework(targetX, targetY) {
             var startX = targetX + (Math.random() * 100 - 50);
             var startY = window.innerHeight;
@@ -194,7 +185,6 @@
             });
         }
 
-        // 爆炸：生成彩色粒子
         function createFirework(x, y) {
             var colors = ['#ff9a9e', '#a1c4fd', '#d4fc79', '#fed6e3', '#96e6a1', '#fff'];
             for (var i = 0; i < 150; i++) {
@@ -214,7 +204,6 @@
         function animateFireworks() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // ===== 升空阶段 =====
             for (var i = rockets.length - 1; i >= 0; i--) {
                 var r = rockets[i];
                 var dx = r.targetX - r.x;
@@ -248,7 +237,6 @@
                 ctx.fill();
             }
 
-            // ===== 爆炸阶段 =====
             for (var i = particles.length - 1; i >= 0; i--) {
                 var p = particles[i];
                 p.x += p.vx;
@@ -256,7 +244,7 @@
                 p.vy += 0.05;
                 p.life -= 0.015;
                 if (p.life <= 0) {
-                    particles);
+                    particles.splice(i, 1);
                     continue;
                 }
                 ctx.beginPath();
@@ -270,9 +258,8 @@
         }
         animateFireworks();
 
-        // 点击屏幕任意位置，也会放一朵
         document.addEventListener('click', function(e) {
-            launchFirework(e.clientX, e.clientY);
+            createFirework(e.clientX, e.clientY);
         });
     </script>
 </div>
