@@ -133,19 +133,28 @@
             document.getElementById('cover').style.display = 'none';
 
             setTimeout(function() {
-                launchFirework(window.innerWidth * 0.2, window.innerHeight * 0.3);
+                launchFirework(window.innerWidth * 0.1, window.innerHeight * 0.25);
             }, 0);
             setTimeout(function() {
-                launchFirework(window.innerWidth * 0.5, window.innerHeight * 0.25);
-            }, 300);
+                launchFirework(window.innerWidth * 0.3, window.innerHeight * 0.4);
+            }, 200);
             setTimeout(function() {
-                launchFirework(window.innerWidth * 0.8, window.innerHeight * 0.35);
+                launchFirework(window.innerWidth * 0.5, window.innerHeight * 0.2);
+            }, 400);
+            setTimeout(function() {
+                launchFirework(window.innerWidth * 0.7, window.innerHeight * 0.35);
             }, 600);
+            setTimeout(function() {
+                launchFirework(window.innerWidth * 0.9, window.innerHeight * 0.25);
+            }, 800);
+            setTimeout(function() {
+                launchFirework(window.innerWidth * 0.4, window.innerHeight * 0.5);
+            }, 1000);
 
             setTimeout(function() {
                 document.getElementById('content').style.display = 'block';
                 checkFade();
-            }, 1800);
+            }, 2200);
         }
 
         function checkFade() {
@@ -187,9 +196,9 @@
 
         function createFirework(x, y) {
             var colors = ['#ff9a9e', '#a1c4fd', '#d4fc79', '#fed6e3', '#96e6a1', '#fff'];
-            for (var i = 0; i < 150; i++) {
+            for (var i = 0; i < 250; i++) {
                 var angle = Math.random() * Math.PI * 2;
-                var speed = Math.random() * 8 + 4;
+                var speed = Math.random() * 12 + 6;
                 particles.push({
                     x: x,
                     y: y,
@@ -248,7 +257,7 @@
                     continue;
                 }
                 ctx.beginPath();
-                ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+                ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
                 ctx.fillStyle = p.color;
                 ctx.globalAlpha = p.life;
                 ctx.fill();
