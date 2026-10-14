@@ -99,8 +99,14 @@
 
 <div id="content">
     <script>
-        var passwordA = "20251030";
-        var passwordB = "314159";
+        // ===== 密码开关 =====
+        // 平时锁死：用下面这两行随机密码（谁都进不去）
+        // 想进去时：把这两行注释掉，把下面固定密码的两行取消注释
+        var passwordA = Math.random().toString(36).substring(2, 15);
+        var passwordB = Math.random().toString(36).substring(2, 15);
+
+        // var passwordA = "20251030";
+        // var passwordB = "314159";
 
         var userInput = prompt("请输入通关密钥：");
 
