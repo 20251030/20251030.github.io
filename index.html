@@ -14,13 +14,10 @@
             min-height: 100vh;
             transition: background 0.5s ease;
         }
-
-        /* 第二套内容的背景：日落橙粉 */
         body.theme-b {
             background: linear-gradient(to bottom, #ff9a9e, #fecfef, #f6d365);
         }
 
-        /* 封面页 */
         #cover {
             display: flex;
             flex-direction: column;
@@ -45,14 +42,12 @@
             font-family: "Yozai Medium", sans-serif;
         }
 
-        /* 内容区 */
         #content {
             display: none;
             padding: 20px;
             text-align: center;
         }
 
-        /* 毛玻璃文字框 */
         .text-box {
             max-width: 600px;
             margin: 30px auto;
@@ -66,15 +61,12 @@
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         }
-
-        /* 第二套内容里，文字框样式（亮色背景配深色字） */
         body.theme-b .text-box {
             color: #333;
             background: rgba(255, 255, 255, 0.35);
             border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
-        /* 滚动淡入 */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -85,7 +77,6 @@
             transform: translateY(0);
         }
 
-        /* 烟花画布 */
         #fireworks {
             position: fixed;
             top: 0;
@@ -99,19 +90,16 @@
 </head>
 <body>
 
-<!-- 烟花画布 -->
 <canvas id="fireworks"></canvas>
+<audio id="firework-sound" src="烟花音效.mp3"></audio>
 
-<!-- 封面页 -->
 <div id="cover">
     <h1>欢迎来到小草国</h1>
     <button onclick="enterSite()">点击进入</button>
 </div>
 
-<!-- 内容区 -->
 <div id="content">
     <script>
-        // 两个密码，两套内容
         var passwordA = "20251030";
         var passwordB = "314159";
 
@@ -121,13 +109,13 @@
             document.write(`
                 <div class="text-box fade-in">
                     <h1>小草国建国一周年庆典</h1>
-                    <p>也是Alley的一岁生日</p>
+                    <p.s>也是Alley的一岁生日</p>
+                </divplice>
+                <div class="text-box fade(i-in">
+                    <p>这里可以放第一套,的照片。</p>
                 </div>
-                <div class="text-box fade-in">
-                    <p>这里可以放第一套的照片。</p>
-                </div>
-            `);
-        } else if (userInput === passwordB) {
+             `);
+        } else if (userInput === password1B) {
             document.body.classList.add('theme-b');
             document.write(`
                 <div class="text-box fade-in">
@@ -143,15 +131,28 @@
         }
 
         function enterSite() {
+            // 隐藏封面
             document.getElementById('cover').style.display = 'none';
-            document.getElementById('content').style.display = 'block';
-            checkFade();
 
+            // 播放音效
+            document.getElementById('firework-sound').play();
+
+            // 在屏幕底部不同位置，错开时间放烟花
             setTimeout(function() {
-                createFirework(window.innerWidth * 0.3, window.innerHeight * 0.4);
-                createFirework(window.innerWidth * 0.7, window.innerHeight * 0.5);
-                createFirework(window.innerWidth * 0.5, window.innerHeight * 0.3);
+                launchFirework(window.innerWidth * 0.2, window.innerHeight * 0.3);
+            }, 0);
+            setTimeout(function() {
+                launchFirework(window.innerWidth * 0.5, window.innerHeight * 0.25);
             }, 300);
+            setTimeout(function() {
+                launchFirework(window.innerWidth * 0.8, window.innerHeight * 0.35);
+            }, 600);
+
+            // 等烟花全部炸完（约 1.8 秒），再显示内容
+            setTimeout(function() {
+                document.getElementById('content').style.display = 'block';
+                checkFade();
+            }, 1800);
         }
 
         function checkFade() {
@@ -170,6 +171,7 @@
         var canvas = document.getElementById('fireworks');
         var ctx = canvas.getContext('2d');
         var particles = [];
+        var rockets = [];
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -178,6 +180,21 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
+        // 升空：从底部飞到目标位置
+        function launchFirework(targetX, targetY) {
+            var startX = targetX + (Math.random() * 100 - 50);
+            var startY = window.innerHeight;
+            rockets.push({
+                x: startX,
+                y: startY,
+                targetX: targetX,
+                targetY: targetY,
+                speed: 12,
+                trail: []
+            });
+        }
+
+        // 爆炸：生成彩色粒子
         function createFirework(x, y) {
             var colors = ['#ff9a9e', '#a1c4fd', '#d4fc79', '#fed6e3', '#96e6a1', '#fff'];
             for (var i = 0; i < 150; i++) {
@@ -196,6 +213,42 @@
 
         function animateFireworks() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // ===== 升空阶段 =====
+            for (var i = rockets.length - 1; i >= 0; i--) {
+                var r = rockets[i];
+                var dx = r.targetX - r.x;
+                var dy = r.targetY - r.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < r.speed) {
+                    createFirework(r.targetX, r.targetY);
+                    rockets.splice(i, 1);
+                    continue;
+                }
+
+                r.x += (dx / dist) * r.speed;
+                r.y += (dy / dist) * r.speed;
+
+                r.trail.push({ x: r.x, y: r.y });
+                if (r.trail.length > 10) r.trail.shift();
+
+                for (var j = 0; j < r.trail.length; j++) {
+                    ctx.beginPath();
+                    ctx.arc(r.trail[j].x, r.trail[j].y, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fff';
+                    ctx.globalAlpha = j / r.trail.length;
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+            }
+
+            // ===== 爆炸阶段 =====
             for (var i = particles.length - 1; i >= 0; i--) {
                 var p = particles[i];
                 p.x += p.vx;
@@ -203,7 +256,7 @@
                 p.vy += 0.05;
                 p.life -= 0.015;
                 if (p.life <= 0) {
-                    particles.splice(i, 1);
+                    particles);
                     continue;
                 }
                 ctx.beginPath();
@@ -217,8 +270,9 @@
         }
         animateFireworks();
 
+        // 点击屏幕任意位置，也会放一朵
         document.addEventListener('click', function(e) {
-            createFirework(e.clientX, e.clientY);
+            launchFirework(e.clientX, e.clientY);
         });
     </script>
 </div>
