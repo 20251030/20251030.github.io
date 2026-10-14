@@ -18,8 +18,67 @@
             background: linear-gradient(to bottom, #ff9a9e, #fecfef, #f6d365);
         }
 
-        #cover {
+        /* 密码页 */
+        #password-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        #password-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        #password-box {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+        }
+        #password-box input {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 25px;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            outline: none;
+            text-align: center;
+            font-family: "Yozai Medium", sans-serif;
+        }
+        #password-box input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        #password-box button {
+            margin-top: 15px;
+            padding: 12px 40px;
+            font-size: 16px;
+            background: #3ddc84;
+            color: #111;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: "Yozai Medium", sans-serif;
+        }
+        #password-error {
+            color: #ff6b6b;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* 封面页 */
+        #cover {
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -90,6 +149,18 @@
 </head>
 <body>
 
+<!-- ===== 密码页 ===== -->
+<div id="password-page">
+    <canvas id="password-canvas"></canvas>
+    <div id="password-box">
+        <input type="password" id="password-input" placeholder="请输入通关密钥">
+        <br>
+        <button onclick="checkPassword()">进入</button>
+        <div id="password-error"></div>
+    </div>
+</div>
+
+<!-- ===== 主页面 ===== -->
 <canvas id="fireworks"></canvas>
 
 <div id="cover">
@@ -97,187 +168,313 @@
     <button onclick="enterSite()">点击进入</button>
 </div>
 
-<div id="content">
-    <script>
-        // ===== 密码开关 =====
-        // 平时锁死：用下面这两行随机密码（谁都进不去）
-        // 想进去时：把这两行注释掉，把下面固定密码的两行取消注释
-        var passwordA = Math.random().toString(36).substring(2, 15);
-        var passwordB = Math.random().toString(36).substring(2, 15);
+<div id="content"></div>
 
-        // var passwordA = "20251030";
-        // var passwordB = "314159";
+<script>
+    // ===== 密码开关 =====
+    var passwordA = Math.random().toString(36).substring(2, 15);
+    var passwordB = Math.random().toString(36).substring(2, 15);
+    // var passwordA = "20251030";
+    // var passwordB = "314159";
 
-        var userInput = prompt("请输入通关密钥：");
+    var currentTheme = "a";
+
+    function checkPassword() {
+        var userInput = document.getElementById('password-input').value;
 
         if (userInput === passwordA) {
-            document.write(`
-                <div class="text-box fade-in">
-                    <h1>小草国建国一周年庆典</h1>
-                    <p>也是Alley的一岁生日</p>
-                </div>
-                <div class="text-box fade-in">
-                    <p>这里可以放第一套的照片。</p>
-                </div>
-            `);
+            currentTheme = "a";
+            document.getElementById('password-page').style.display = 'none';
+            document.getElementById('cover').style.display = 'flex';
+            checkFade();
         } else if (userInput === passwordB) {
+            currentTheme = "b";
             document.body.classList.add('theme-b');
-            document.write(`
-                <div class="text-box fade-in">
-                    <h1>Europa和Iris的日常碎片</h1>
-                    <p>不全正经哦</p>
-                </div>
-                <div class="text-box fade-in">
-                    <p>这里可以放第二套的照片。</p>
-                </div>
-            `);
+            document.getElementById('password-page').style.display = 'none';
+            document.getElementById('cover').style.display = 'flex';
+            checkFade();
         } else {
-            document.write("<p>密码错误，刷新页面重试。</p>");
+            document.getElementById('password-error').innerText = "密钥错误，请重试";
+            document.body.innerHTML = "";
+            document.body.style.background = "#111";
         }
+    }
 
-        function enterSite() {
-            document.getElementById('cover').style.display = 'none';
+    // ===== 密码页背景画图：安卓机器人啃文件包 =====
+    var pCanvas = document.getElementById('password-canvas');
+    var pCtx = pCanvas.getContext('2d');
 
-            setTimeout(function() {
-                launchFirework(window.innerWidth * 0.1, window.innerHeight * 0.25);
-            }, 0);
-            setTimeout(function() {
-                launchFirework(window.innerWidth * 0.3, window.innerHeight * 0.4);
-            }, 200);
-            setTimeout(function() {
-                launchFirework(window.innerWidth * 0.5, window.innerHeight * 0.2);
-            }, 400);
-            setTimeout(function() {
-                launchFirework(window.innerWidth * 0.7, window.innerHeight * 0.35);
-            }, 600);
-            setTimeout(function() {
-                launchFirework(window.innerWidth * 0.9, window.innerHeight * 0.25);
-            }, 800);
-            setTimeout(function() {
-                launchFirework(window.innerWidth * 0.4, window.innerHeight * 0.5);
-            }, 1000);
+    function drawPasswordBg() {
+        pCanvas.width = window.innerWidth;
+        pCanvas.height = window.innerHeight;
 
-            setTimeout(function() {
-                document.getElementById('content').style.display = 'block';
-                checkFade();
-            }, 2200);
-        }
+        var w = pCanvas.width;
+        var h = pCanvas.height;
+        var cx = w / 2;
+        var cy = h / 2;
 
-        function checkFade() {
-            var elements = document.querySelectorAll('.fade-in');
-            for (var i = 0; i < elements.length; i++) {
-                var rect = elements[i].getBoundingClientRect();
-                if (rect.top < window.innerHeight - 50) {
-                    elements[i].classList.add('show');
-                }
+        // 深色背景
+        var grad = pCtx.createLinearGradient(0, 0, 0, h);
+        grad.addColorStop(0, '#1a1a1a');
+        grad.addColorStop(1, '#0a0a0a');
+        pCtx.fillStyle = grad;
+        pCtx.fillRect(0, 0, w, h);
+
+        // 画在正中间
+        pCtx.save();
+        pCtx.translate(cx, cy);
+
+        // ===== 损坏的文件包 =====
+        pCtx.save();
+        pCtx.translate(60, -20);
+        pCtx.strokeStyle = '#888';
+        pCtx.lineWidth = 3;
+        pCtx.fillStyle = '#333';
+        pCtx.beginPath();
+        pCtx.moveTo(-50, -60);
+        pCtx.lineTo(20, -60);
+        pCtx.lineTo(50, -30);
+        pCtx.lineTo(50, 60);
+        pCtx.lineTo(-50, 60);
+        pCtx.closePath();
+        pCtx.fill();
+        pCtx.stroke();
+
+        // 折角
+        pCtx.beginPath();
+        pCtx.moveTo(20, -60);
+        pCtx.lineTo(20, -30);
+        pCtx.lineTo(50, -30);
+        pCtx.stroke();
+
+        // 裂痕
+        pCtx.strokeStyle = '#ff4444';
+        pCtx.lineWidth = 2;
+        pCtx.beginPath();
+        pCtx.moveTo(-20, -20);
+        pCtx.lineTo(10, 10);
+        pCtx.lineTo(-10, 30);
+        pCtx.stroke();
+        pCtx.restore();
+
+        // ===== 安卓机器人 =====
+        pCtx.strokeStyle = '#3ddc84';
+        pCtx.fillStyle = '#3ddc84';
+        pCtx.lineWidth = 3;
+
+        // 头
+        pCtx.beginPath();
+        pCtx.arc(0, 0, 40, Math.PI, 0);
+        pCtx.closePath();
+        pCtx.fill();
+
+        // 天线
+        pCtx.beginPath();
+        pCtx.moveTo(-20, -35);
+        pCtx.lineTo(-30, -55);
+        pCtx.stroke();
+        pCtx.beginPath();
+        pCtx.moveTo(20, -35);
+        pCtx.lineTo(30, -55);
+        pCtx.stroke();
+
+        // 眼睛
+        pCtx.fillStyle = '#111';
+        pCtx.beginPath();
+        pCtx.arc(-15, -15, 4, 0, Math.PI * 2);
+        pCtx.fill();
+        pCtx.beginPath();
+        pCtx.arc(15, -15, 4, 0, Math.PI * 2);
+        pCtx.fill();
+
+        // 身体
+        pCtx.fillStyle = '#3ddc84';
+        pCtx.fillRect(-40, 5, 80, 70);
+
+        // 手臂
+        pCtx.fillRect(-60, 15, 15, 50);
+        pCtx.fillRect(45, 15, 15, 50);
+
+        // 腿
+        pCtx.fillRect(-25, 80, 15, 40);
+        pCtx.fillRect(10, 80, 15, 40);
+
+        // 嘴巴（张开，对着文件包）
+        pCtx.fillStyle = '#111';
+        pCtx.beginPath();
+        pCtx.arc(0, -5, 8, 0, Math.PI * 2);
+        pCtx.fill();
+
+        pCtx.restore();
+    }
+
+    drawPasswordBg();
+    window.addEventListener('resize', drawPasswordBg);
+
+    // ===== 主页面逻辑 =====
+    function enterSite() {
+        document.getElementById('cover').style.display = 'none';
+
+        setTimeout(function() {
+            launchFirework(window.innerWidth * 0.1, window.innerHeight * 0.25);
+        }, 0);
+        setTimeout(function() {
+            launchFirework(window.innerWidth * 0.3, window.innerHeight * 0.4);
+        }, 200);
+        setTimeout(function() {
+            launchFirework(window.innerWidth * 0.5, window.innerHeight * 0.2);
+        }, 400);
+        setTimeout(function() {
+            launchFirework(window.innerWidth * 0.7, window.innerHeight * 0.35);
+        }, 600);
+        setTimeout(function() {
+            launchFirework(window.innerWidth * 0.9, window.innerHeight * 0.25);
+        }, 800);
+        setTimeout(function() {
+            launchFirework(window.innerWidth * 0.4, window.innerHeight * 0.5);
+        }, 1000);
+
+        setTimeout(function() {
+            var content = document.getElementById('content');
+            content.style.display = 'block';
+            if (currentTheme === "b") {
+                content.innerHTML = `
+                    <div class="text-box fade-in">
+                        <h1>Europa和Iris的日常碎片</h1>
+                        <p>不全正经哦</p>
+                    </div>
+                    <div class="text-box fade-in">
+                        <p>这里可以放第二套的照片。</p>
+                    </div>
+                `;
+            } else {
+                content.innerHTML = `
+                    <div class="text-box fade-in">
+                        <h1>小草国建国一周年庆典</h1>
+                        <p>也是Alley的一岁生日</p>
+                    </div>
+                    <div class="text-box fade-in">
+                        <p>这里可以放第一套的照片。</p>
+                    </div>
+                `;
+            }
+            checkFade();
+        }, 2200);
+    }
+
+    function checkFade() {
+        var elements = document.querySelectorAll('.fade-in');
+        for (var i = 0; i < elements.length; i++) {
+            var rect = elements[i].getBoundingClientRect();
+            if (rect.top < window.innerHeight - 50) {
+                elements[i].classList.add('show');
             }
         }
-        window.addEventListener('scroll', checkFade);
-        window.addEventListener('load', checkFade);
+    }
+    window.addEventListener('scroll', checkFade);
 
-        var canvas = document.getElementById('fireworks');
-        var ctx = canvas.getContext('2d');
-        var particles = [];
-        var rockets = [];
+    var canvas = document.getElementById('fireworks');
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var rockets = [];
 
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-        function launchFirework(targetX, targetY) {
-            var startX = targetX + (Math.random() * 100 - 50);
-            var startY = window.innerHeight;
-            rockets.push({
-                x: startX,
-                y: startY,
-                targetX: targetX,
-                targetY: targetY,
-                speed: 12,
-                trail: []
+    function launchFirework(targetX, targetY) {
+        var startX = targetX + (Math.random() * 100 - 50);
+        var startY = window.innerHeight;
+        rockets.push({
+            x: startX,
+            y: startY,
+            targetX: targetX,
+            targetY: targetY,
+            speed: 12,
+            trail: []
+        });
+    }
+
+    function createFirework(x, y) {
+        var colors = ['#ff9a9e', '#a1c4fd', '#d4fc79', '#fed6e3', '#96e6a1', '#fff'];
+        for (var i = 0; i < 250; i++) {
+            var angle = Math.random() * Math.PI * 2;
+            var speed = Math.random() * 12 + 6;
+            particles.push({
+                x: x,
+                y: y,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                life: 1,
+                color: colors[Math.floor(Math.random() * colors.length)]
             });
         }
+    }
 
-        function createFirework(x, y) {
-            var colors = ['#ff9a9e', '#a1c4fd', '#d4fc79', '#fed6e3', '#96e6a1', '#fff'];
-            for (var i = 0; i < 250; i++) {
-                var angle = Math.random() * Math.PI * 2;
-                var speed = Math.random() * 12 + 6;
-                particles.push({
-                    x: x,
-                    y: y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
-                    life: 1,
-                    color: colors[Math.floor(Math.random() * colors.length)]
-                });
+    function animateFireworks() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (var i = rockets.length - 1; i >= 0; i--) {
+            var r = rockets[i];
+            var dx = r.targetX - r.x;
+            var dy = r.targetY - r.y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < r.speed) {
+                createFirework(r.targetX, r.targetY);
+                rockets.splice(i, 1);
+                continue;
             }
-        }
 
-        function animateFireworks() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            r.x += (dx / dist) * r.speed;
+            r.y += (dy / dist) * r.speed;
 
-            for (var i = rockets.length - 1; i >= 0; i--) {
-                var r = rockets[i];
-                var dx = r.targetX - r.x;
-                var dy = r.targetY - r.y;
-                var dist = Math.sqrt(dx * dx + dy * dy);
+            r.trail.push({ x: r.x, y: r.y });
+            if (r.trail.length > 10) r.trail.shift();
 
-                if (dist < r.speed) {
-                    createFirework(r.targetX, r.targetY);
-                    rockets.splice(i, 1);
-                    continue;
-                }
-
-                r.x += (dx / dist) * r.speed;
-                r.y += (dy / dist) * r.speed;
-
-                r.trail.push({ x: r.x, y: r.y });
-                if (r.trail.length > 10) r.trail.shift();
-
-                for (var j = 0; j < r.trail.length; j++) {
-                    ctx.beginPath();
-                    ctx.arc(r.trail[j].x, r.trail[j].y, 2, 0, Math.PI * 2);
-                    ctx.fillStyle = '#fff';
-                    ctx.globalAlpha = j / r.trail.length;
-                    ctx.fill();
-                }
-                ctx.globalAlpha = 1;
-
+            for (var j = 0; j < r.trail.length; j++) {
                 ctx.beginPath();
-                ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+                ctx.arc(r.trail[j].x, r.trail[j].y, 2, 0, Math.PI * 2);
                 ctx.fillStyle = '#fff';
-                ctx.fill();
-            }
-
-            for (var i = particles.length - 1; i >= 0; i--) {
-                var p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.05;
-                p.life -= 0.015;
-                if (p.life <= 0) {
-                    particles.splice(i, 1);
-                    continue;
-                }
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
-                ctx.fillStyle = p.color;
-                ctx.globalAlpha = p.life;
+                ctx.globalAlpha = j / r.trail.length;
                 ctx.fill();
             }
             ctx.globalAlpha = 1;
-            requestAnimationFrame(animateFireworks);
-        }
-        animateFireworks();
 
-        document.addEventListener('click', function(e) {
-            createFirework(e.clientX, e.clientY);
-        });
-    </script>
-</div>
+            ctx.beginPath();
+            ctx.arc(r.x, r.y, 3, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+        }
+
+        for (var i = particles.length - 1; i >= 0; i--) {
+            var p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.vy += 0.05;
+            p.life -= 0.015;
+            if (p.life <= 0) {
+                particles.splice(i, 1);
+                continue;
+            }
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 5, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.life;
+            ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+        requestAnimationFrame(animateFireworks);
+    }
+    animateFireworks();
+
+    document.addEventListener('click', function(e) {
+        createFirework(e.clientX, e.clientY);
+    });
+</script>
 
 </body>
 </html>
